@@ -168,3 +168,8 @@ It means Sky PDK foundary, stadard cell, high-density
    ![](images/day3/13fall%20time%20point1.JPG)
     - 
    ![](images/day3/14fall%20time%20point2.JPG)
+   
+ # Acknowledgement
+ - Kunal Ghosh - Co-founder (VSD Corp. Pvt. Ltd)
+ - Nickson Jose - VSD VLSI Engineer
+ 
