@@ -81,9 +81,46 @@ It means Sky PDK foundary, stadard cell, high-density
 ![](images/day1/7Design%20Configtcl.JPG)
 
 ## Synthesis
-- The systhesis can be performed in the openlane platform (after design prepration), type  %run_synthesis.
+- The systhesis can be performed in the openlane platform (after design prepration), type  %run_synthesis (it will take few minutes to run)
 - Window after systhesis is performed
 ![](images/day1/10run_synthesis.JPG)
 
 - Yosys and abc are the tools used in the OpenLANE flow for synthesis. it will create a folder by the name of present date in the runs folder, inside which 'results' consist all the details
 ![](images/day1/11runs%20folder.JPG)
+
+ # Day 2: Floorplan and Placement
+ - One can create own folder as well, in this case instead of creating folder by date_name after run, the runs will occur in the own created folder itself.
+ - Command for creating folder during prepration is:
+ - % prep -design picorv32a -tag <name> run1
+ ![](images/day2/1created%20own%20folder.JPG)
+ 
+ ## Floorplan
+ - To run floorplan, type   run_floorplan (it will take few minutes to run and afterward the display is as follows)
+  ![](images/day2/3run%20floorplan.JPG)
+  
+  - Floorplan will have several variable, IOplacer can be seen using command  less floorplan.tcl
+    ![](images/day2/2floorplan%20ioPlacer.JPG)
+    
+   - Now, in order to see the actual floorplan MAGIC (opennsource tool) can be used. For this to open, we will go to folder /results/floorplan
+   - Command is   magic -T ~/Desktop/vsdflow/work/tools/openlane_working_dir/pdks/sky130A/libs.tech/magic/sky130A.tech lef read ../../tmp/merged.lef def read picorv32a.floorplan.def &
+   ![](images/day2/5floorplan%20magic.JPG)
+   
+   - It opens the floorplan in MAGIC, shown hereby
+   ![](images/day2/6floorplane%20in%20magic.JPG)
+   
+   - Now, if we want to see the details of the specific components, first zoom in the structure and put cursor at any specific component and press 's'. It will highlight the specific component. Now, type 'what' in the tkcon window that will give its description.
+    ![](images/day2/7floorplan%20detail.JPG)
+    
+ ## Placement
+ - Placements are of two types Global and detailed placement
+ - The steps are very similar to floorplan, to run type  run_placement
+ 
+ - Command to see the placement in MAGIC is:
+ - magic -T /Desktop/vsdflow/work/tools/openlane_working_dir/pdks/sky130A/libs.tech/magic/sky130A.tech lef read ../../tmp/merged.lef def read picorv32a.placement.def &
+  ![](images/day2/8placement%20magic.JPG)
+  
+  Placement in MAGIC
+  ![](images/day2/9placement.JPG)
+  
+  To see specific detail in tkcon using 'what' command
+  ![](images/day2/10placement%20what.JPG)
