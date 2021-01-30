@@ -124,3 +124,47 @@ It means Sky PDK foundary, stadard cell, high-density
   
   To see specific detail in tkcon using 'what' command
   ![](images/day2/10placement%20what.JPG)
+  
+ 
+ # Day 3: Analysis of CMOS inverter using MAGIC and NGSPICE
+ - We can either create the Inverter layout from scratch or we can just use the precreated inverter layout at https://github.com/nickson-jose/vsdstdcelldesign
+ - Steps to create inverter in Openlane
+  - 1. Invoke the vsdstdcelldesign to our openlane by using git cloning
+  - git clone https://github.com/nickson-jose/vsdstdcelldesign.git
+  ![](images/day3/1clone%20vsdstdcelldesign.JPG)
+  
+  - 2. Now, we need to copy the design into /libs.tech/magic. So, first we get into this path and type 
+  - cp sky130A.tech ~/Desktop/vsdflow/work/tools/openlane_working_dir/openlane/vsdstdcelldesign
+  ![](images/day3/2copy%20inverter%20to%20magic.JPG)
+  - We can see the copied file
+  ![](images/day3/3inverter%20copied.JPG)
+  
+  ## Inverter in MAGIC
+  - Next, we will open the layout in MAGIC, using command
+  - magic -T sky130A.tech sky130_inv.mag &
+  - Inverter layout in MAGIC
+  ![](images/day3/4inverter%20layout%20in%20magic.JPG)
+  
+   - As steps used earlier, we can see the description in tkcon window, also we can check DRC using MAGIC and tkcon windows
+   ![](images/day3/5tkcon%20description.JPG)
+   
+   ## PEX using tkcon
+   - To perform parasitic extraction, we use following commands
+   ![](images/day3/6pex%20in%20tkcon.JPG)
+   
+   - Files generated can be shown here:
+   ![](images/day3/7ext%20and%20spice%20files.JPG)
+   
+   ![](images/day3/8spice%20file.JPG)
+   
+   ![](images/day3/9spice%290file.JPG)
+   
+   ![](images/day3/10open%20ngspice.JPG)
+   
+   ![](images/day3/11plot%20command.JPG)
+   
+   ![](images/day3/12transient%20response.JPG)
+   
+   ![](images/day3/13fall%20time%20point1.JPG)
+    - 
+   ![](images/day3/14fall%20time%20point2.JPG)
