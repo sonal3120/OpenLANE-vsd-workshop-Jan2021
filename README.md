@@ -158,7 +158,7 @@ It means Sky PDK foundary, stadard cell, high-density
    ![](images/day3/7ext%20and%20spice%20files.JPG)
    
    - The sky130_inv.spice needs to be edited for our required circuit specifications (editing can be done by opening the spice file in editor)
-   ![](images/day3/9spice%290file.JPG)
+   ![](images/day3/9spice%20file.JPG)
    
    - Now, the spice extracted file will be opened and analysed in ngspice, command    ngspice sky130_inv.spice
    ![](images/day3/10open%20ngspice.JPG)
@@ -286,8 +286,10 @@ It means Sky PDK foundary, stadard cell, high-density
    
    
 
-   
+# Contact
+Sonal Shreya - shreya.sonal20@gmail.com
+
  # Acknowledgement
- - Kunal Ghosh - Co-founder (VSD Corp. Pvt. Ltd)
- - Nickson Jose - VSD VLSI Engineer
+ - Kunal Ghosh - Co-founder (VSD Corp. Pvt. Ltd) https://github.com/kunalg123
+ - Nickson Jose - VSD VLSI Engineer https://github.com/nickson-jose
  
