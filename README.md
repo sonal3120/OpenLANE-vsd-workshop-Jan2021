@@ -3,13 +3,13 @@ The workshop held virtually from 22-26th Jan 2021 through which we learned RTL t
 ![](images/day1/cover.JPG)
 
 ## Table of content
-  * 1 Familiarization with tool
-  * 2 Working on Openlane
-  * 3 Day 1 - How to start with Openlane and synthesis
-  * 4 Day 2 - Floorplan and placement
-  * 5 Day 3 - Analysis of Inverter using MAGIC and NGSPICE
-  * 6 Day 4 - Pre-layout and timing analysis
-  * 7 Day 5 - Final steps to RTL2GDSII
+  * 1. Familiarization with tool
+  * 2. Working on Openlane
+  * 3. Day 1 - How to start with Openlane and synthesis
+  * 4. Day 2 - Floorplan and placement
+  * 5. Day 3 - Analysis of Inverter using MAGIC and NGSPICE
+  * 6. Day 4 - Pre-layout and timing analysis
+  * 7. Day 5 - Final steps to RTL2GDSII
 
 # RTL to GDSII using OpenLANE
 As OpneLANE is opensource tool that can be installed on any system using a virtual box .To set up OpenLANE in your local PC with virtual box you need :
@@ -275,7 +275,7 @@ It means Sky PDK foundary, stadard cell, high-density
 - % read_db pico_cts.db
 - % read_lef <Location_of_LEF_file> //Location of LEF file - /designs/picorv32a/runs/<tag_name>/tmp/merged.lef
 - % read_def <Location_of_DEF_file> //Location of DEF file - /designs/picorv32a/runs/<tag_name>/results/cts/picorv23a.cts.def
-- % read_verilog <Location_of_verilog_file> //Verilog file - /designs/picorv32a/runs/<tag_name>/results/synthesis/picorv32a.synthesis_cts.v
+- % read_verilog <Location_of_verilog_file> //Verilog file - /designs/picorv32a/runs/<tag_name>/results/synthesis/picorv32a.synthesis_cts.v 
 - % read_liberty $::env(LIB_SYNTH_COMPLETE)
 - % link_design <design_name> //design name = picorv32a
 - % read_sdc <Location_of_sdc_file> //sdc file - /designs/picorv32a/runs/<tag_name>/src/my_base.sdc
