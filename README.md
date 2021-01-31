@@ -254,7 +254,7 @@ It means Sky PDK foundary, stadard cell, high-density
 - Note: CTS is run only once synthesis->floorplan->placement has been performed.
 
 - The CTS file looks as follows:
-  ![](images/day4/run_cts_file.JPG)
+ - ![](images/day4/run_cts_file.JPG)
   
   - The CTS can be seen in the MAGIC wherein we can notice the added buffers in the std cell.
   - To open magic, magic -T /Desktop/vsdflow/work/tools/openlane_working_dir/pdks/sky130A/libs.tech/magic/sky130A.tech lef read ../../tmp/merged.lef def read picorv32a.cts.def &
@@ -271,17 +271,44 @@ It means Sky PDK foundary, stadard cell, high-density
 
 - Then type the following commands:
 
-% write_db pico_cts.db
-% read_db pico_cts.db
-% read_lef <Location_of_LEF_file> //Location of LEF file - /designs/picorv32a/runs/<tag_name>/tmp/merged.lef
-% read_def <Location_of_DEF_file> //Location of DEF file - /designs/picorv32a/runs/<tag_name>/results/cts/picorv23a.cts.def
-% read_verilog <Location_of_verilog_file> //Verilog file - /designs/picorv32a/runs/<tag_name>/results/synthesis/picorv32a.synthesis_cts.v
-% read_liberty $::env(LIB_SYNTH_COMPLETE)
-% link_design <design_name> //design name = picorv32a
-% read_sdc <Location_of_sdc_file> //sdc file - /designs/picorv32a/runs/<tag_name>/src/my_base.sdc
-% set_propagated_clock [all_clocks]
-% report_checks -path_delay min_max -fields {slew trans net cap inpput_pin} -format full_clock_expanded -digits 4 
+- % write_db pico_cts.db
+- % read_db pico_cts.db
+- % read_lef <Location_of_LEF_file> //Location of LEF file - /designs/picorv32a/runs/<tag_name>/tmp/merged.lef
+- % read_def <Location_of_DEF_file> //Location of DEF file - /designs/picorv32a/runs/<tag_name>/results/cts/picorv23a.cts.def
+- % read_verilog <Location_of_verilog_file> //Verilog file - /designs/picorv32a/runs/<tag_name>/results/synthesis/picorv32a.synthesis_cts.v
+- % read_liberty $::env(LIB_SYNTH_COMPLETE)
+- % link_design <design_name> //design name = picorv32a
+- % read_sdc <Location_of_sdc_file> //sdc file - /designs/picorv32a/runs/<tag_name>/src/my_base.sdc
+- % set_propagated_clock [all_clocks]
+- % report_checks -path_delay min_max -fields {slew trans net cap inpput_pin} -format full_clock_expanded -digits 4 
 
+# Day 5: Final steps 
+
+- At first, to check which part of flow we currently are in use the command (in OPENLANE interactive): % echo $::env(CURRENT_DEF)
+- After the CTS when we use the command we see that CURRENT_DEF holds the def file that we get after performing the cts stage.
+![](images/day5/pic1.JPG)
+
+### Power Distribution Netwrok (PDN)
+- Next, to perform pdn, use command  % gen_pdn
+- We also get an idea about the information regarding Stdcell Rails and Straps. The Standard cell we worked with was the simple inverter which we integrated into the picorv32a design, and we had set the dimensions to be 2.72, the reason of which is explained in the image above. The Standard Cell pitch is defined as 2.72 which indicates that any standard cell is required to fit into multiples of this dimension itself. 
+- This image, courtesy of Nickson's tutorial explanation about the Power distribution network, concisely shows how the power is actually distributed to the entire chip.
+- ![](images/day5/pic2.JPG)
+
+- Here, the green portion represents the design, i.e, picorv32a, the red and blue streaks represent the VCC and GND aspects respectively. As seen, the power and ground parts of the circuit are tapped from their respective ports and vertically distribute themselves to all the necessary points of the design. The Horizontal straps are set aside for the standard cells that we integrate in the design. This is a high level understanding of the power distribution network.
+
+### Routing 
+- There are two types of routing : Global and Detailed routing. Global routing is done by FastRoute and Detailed routing is done by TritonRoute. TritonRoute offers us various routing strategis.ROUTING_STRATEGY from 0 to 3 uses Triton-13 engine which has faster runtime and ROUTING_STRATEGY 14 uses Triton-14 engine which has better DRCs. For checking which strategy we are using use the command :
+
+- % echo $::env(ROUTING_STRATEGY)
+
+- Then, routing needs to be performed command,  % run_routing
+
+### SPEF Extraction
+- Once the routing is completed, the interconnect parasitics are extracted to perform sign off Post-STA analysis. These parasitics are extracted into a SPEF file.
+
+- The SPEF EXTRACTOR is yet to be integrated to OpenLANE, we have to run it separately. Its available in /work/tools directory. We have to run the python file named main.py in SPEF_EXTRACTOR directory. The command to do this is as folows:
+
+- $ ~/python3 main.py /designs/picorv32a/runs/<tag_name>/tmp/merged.lef /designs/picorv32a/runs/<tag_name>/results/routing/picorv32a.def
 
    
    
