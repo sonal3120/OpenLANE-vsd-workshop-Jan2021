@@ -3,11 +3,13 @@ The workshop held virtually from 22-26th Jan 2021 through which we learned RTL t
 ![](images/day1/cover.JPG)
 
 ## Table of content
-  * 1.1 Familiarization with tool
-  * 1.2 Working on Openlane
-  * 1.3 Day 1 - How to start with Openlane and synthesis
-  * 1.4 Day 2 - Floorplan and placement
-  * 1.5 Day 3 - Analysis of Inverter using MAGIC and NGSPICE
+  * 1 Familiarization with tool
+  * 2 Working on Openlane
+  * 3 Day 1 - How to start with Openlane and synthesis
+  * 4 Day 2 - Floorplan and placement
+  * 5 Day 3 - Analysis of Inverter using MAGIC and NGSPICE
+  * 6 Day 4 - Pre-layout and timing analysis
+  * 7 Day 5 - Final steps to RTL2GDSII
 
 # RTL to GDSII using OpenLANE
 As OpneLANE is opensource tool that can be installed on any system using a virtual box .To set up OpenLANE in your local PC with virtual box you need :
@@ -155,19 +157,135 @@ It means Sky PDK foundary, stadard cell, high-density
    - Files generated can be shown here:
    ![](images/day3/7ext%20and%20spice%20files.JPG)
    
-   ![](images/day3/8spice%20file.JPG)
-   
+   - The sky130_inv.spice needs to be edited for our required circuit specifications (editing can be done by opening the spice file in editor)
    ![](images/day3/9spice%290file.JPG)
    
+   - Now, the spice extracted file will be opened and analysed in ngspice, command    ngspice sky130_inv.spice
    ![](images/day3/10open%20ngspice.JPG)
    
+   - Next, to plot the input and output waveform use command   plot y vs time a
    ![](images/day3/11plot%20command.JPG)
    
+   - Following shows the transient analysis of CMOS inverter
    ![](images/day3/12transient%20response.JPG)
    
+ #### CMOS inverter delay analysis
+  - 1. Fall time - It's the time taken for the signal to go from 80% (i.e. 2.64V) of it's maximum value (i.e. 3.3V) to 20% (i.e. 0.66V). It can be calculated by subtracting the two values of x co-ordinate. The fall time evaluated is 0.01852 ns
    ![](images/day3/13fall%20time%20point1.JPG)
-    - 
    ![](images/day3/14fall%20time%20point2.JPG)
+   
+   Note: Right click the area in transient analysis waveform window to zoom the area for calculating rise/fall time. Just click on the waveform, it will give the point in the terminal window (as depicted in Figures)
+   
+  - 2. Rise time - It's the time taken for the signal to go from 20%  to 80%. The rise time evaluated is 0.04364 ns
+   ![](images/day3/15risetime_point1.JPG)
+   ![](images/day3/16risetime_point2.JPG)
+   
+   - 3. Propagation delay - It is the difference of input and output waveforms at the 50% of the maximum value. It is calculated as 0.02778 ns.
+   ![](images/day3/propagation%20delay.JPG)
+   
+ # Day 4: Pre-layout and timing analysis
+ - Now, this section will focus on placement and routing step. The PnR tools, make use of abstract LEF files, to perform interconnect optimised routes, in accordance with the set guidelines which have governed the industry. 
+ - In the folder, in folder /libs.tech/openlane/sky130_fd_sc_hd$  give command   vim tracks.info
+  ![](images/day4/vim_tracks_info.JPG)
+  
+  - The track file looks as (this will show the track grids in layout):
+  ![](images/day4/tracks_info.JPG)
+  
+  - Although, in our example, the pre-designed Inverter layout is used. However, in case of designing the layout the port names can be defined by selecting the particular port (put cursor there and press 's') and go to edit > text, The MAGIC window will look like:
+  ![](images/day4/edit_portname.JPG)
+  
+  - All the layers description can be seen in the tkcon window
+  ![](images/day4/layer_detail_inverter.JPG)
+  
+  ### How to create lef file
+ - Magic tool allows for users to create their Cell LEF file. This returns a scale value of 0.01. In tkcon window type % lef write
+  ![](images/day4/lef_write.JPG)
+  
+  - Now, we can see the lef file generated in vsdstdcelldesign folder as:
+  ![](images/day4/lef_created_vsdstdcell.JPG)
+  
+  - This is how the lef file will look like (to see lef file, less sky130_inv.lef):
+  ![](images/day4/lef_file.JPG)
+  
+  - Next, we will copy the lef file to picorv32a design folder
+  - cp sky130_inv.lef ~/Desktop/vsdflow/work/tools/openlane_working_dir/openlane/designs/picorv32a/src
+   ![](images/day4/copy_lef_picorv32a src.JPG)
+   
+   - As we know that any design consist of corners (slow, fast, and typical). Now, these corners flies will also be copied using the command:
+   - cp sky130_fd_sc_hd__* ~/Desktop/vsdflow/work/tools/openlane_working_dir/openlane/designs/picorv32a/src
+   ![](images/day4/copy_cornerfile_toPicorv32a_src.JPG)
+   
+   - Check the corner files in ~/picorv32a/src folder
+   ![](images/day4/file_copied_inSRC.JPG)
+   
+  ## How to include standalone standard cell into OpenLANE
+  - First, we need to prepare the design in picorv32a with new name in OpenLANE, following the standard steps of invoking OPENLANE
+  - ./flow.tcl -interactive 
+  - package require openlane 0.9
+  
+  - Next, the design with new folder will be prepared and it will be overwrote:
+  - prep -design picorv32a -tag (name) -overwrtite
+  ![](images/day4/prep_design_overwrite.JPG)
+  
+  - Now, After add these commands to include sky130_vsdinv.lef in ~/tmp/meged.lef in openlane flow:
+
+   set lefs [glob $::env(DESIGN_DIR)/src/*.lef]
+   add_lefs -src $lefs
+   ![](images/day4/set_file.JPG)
+   
+   - Now, for this design we will perform all the other steps using pre-descibed commands (run_synthesis, run_floorplan, run_placement)
+   - Next, the placement file will be opned in MAGIC using following command:
+  -  magic -T /Desktop/vsdflow/work/tools/openlane_working_dir/pdks/sky130A/libs.tech/magic/sky130A.tech lef read ../../tmp/merged.lef def read picorv32a.placement.def &
+   ![](images/day4/placement_magic.JPG)
+   
+   - On zooming the placement of the cell, we can see the standard cells
+   ![](images/day4/zoom_placement.JPG)
+   
+   - Now, we need to Copy my_base.sdc to ~picorc32a/src, command
+   - cp my_base.sdc ~/Desktop/vsdflow/work/tools/openlane_working_dir/openlane/designs/picorv32a/src
+   ![](images/day4/copy_mybase.JPG)
+   
+   ## Clock tree synthesis
+   
+   - To run Clock Tress Synthesis in OpenLANE :- % run_cts
+
+- OpenLANE intrinsically will add the necessary buffers required to make sure the timing rules are adhered to which will modify our pre-existing netlist. Buffers are added so that the signal might reach without distortion. This will reflect in the synthesis folder as another file by the name "picorv32a.synthesis_cts.v" along with the traditional "picorv32a.synthesis.v" in the /designs/picorv32a/runs/<tag_name>/results/synthesis directory.
+
+- Note: CTS is run only once synthesis->floorplan->placement has been performed.
+
+- The CTS file looks as follows:
+  ![](images/day4/run_cts_file.JPG)
+  
+  - The CTS can be seen in the MAGIC wherein we can notice the added buffers in the std cell.
+  - To open magic, magic -T /Desktop/vsdflow/work/tools/openlane_working_dir/pdks/sky130A/libs.tech/magic/sky130A.tech lef read ../../tmp/merged.lef def read picorv32a.cts.def &
+  ![](images/day4/cts_magic.JPG)
+  ![](images/day4/cts.JPG)
+  
+  - The buffer circuits can be seen on zooming.
+  ![](images/day4/bufferadded_checkzoomed.JPG)
+  
+  ## OpenROAD
+ 
+- Timing analysis is done in OpenLANE by creating a .db database file. This database file is created from the post-cts LEF and DEF files. 
+- To invoke OpenROAD use command in OPENLANE,  % openroad.
+
+- Then type the following commands:
+
+% write_db pico_cts.db
+% read_db pico_cts.db
+% read_lef <Location_of_LEF_file> //Location of LEF file - /designs/picorv32a/runs/<tag_name>/tmp/merged.lef
+% read_def <Location_of_DEF_file> //Location of DEF file - /designs/picorv32a/runs/<tag_name>/results/cts/picorv23a.cts.def
+% read_verilog <Location_of_verilog_file> //Verilog file - /designs/picorv32a/runs/<tag_name>/results/synthesis/picorv32a.synthesis_cts.v
+% read_liberty $::env(LIB_SYNTH_COMPLETE)
+% link_design <design_name> //design name = picorv32a
+% read_sdc <Location_of_sdc_file> //sdc file - /designs/picorv32a/runs/<tag_name>/src/my_base.sdc
+% set_propagated_clock [all_clocks]
+% report_checks -path_delay min_max -fields {slew trans net cap inpput_pin} -format full_clock_expanded -digits 4 
+
+
+   
+   
+
    
  # Acknowledgement
  - Kunal Ghosh - Co-founder (VSD Corp. Pvt. Ltd)
